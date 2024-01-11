@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "bootstrap/dist/css/bootstrap.css";
+body {
+    padding-bottom: 100px;
+}
+.pointer {
+    cursor: pointer;
+}
+.nav-link.active {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}

@@ -1,0 +1,55 @@
+<div class="input-group">
+    <input type="text" class="form-control bg-light" placeholder="Search" #filter (keyup)="update(filter.value)">
+    <button class="btn btn-light btn-outline-secondary" type="button" (click)="filter.value=''; update(filter.value)">Clear</button>
+</div>
+  
+<div *ngIf="trips$ | async as trips; else loading" class="my-4">
+    <div *ngFor="let trip of trips" class="card d-flex flex-column p-2">
+        <div class="d-flex flex-column flex-md-row align-items-center m-3">
+            <img [src]="trip.imgs[0]" class="rounded-circle card-img-circle pointer" alt="..." loading="lazy" (click)="goToSpecified(trip)">
+            
+            <div class="d-flex flex-column align-content-start mx-4 mt-3">
+                <a class="fs-3 text-decoration-none text-dark pointer" (click)="goToSpecified(trip)">{{ trip.name | uppercase}}</a>
+                <p class="fs-5 fw-bold">{{trip.location | uppercase}}</p>
+                <p>{{trip.startDate.toDate() | date:'dd.MM.yyyy'}} - {{trip.endDate.toDate() | date:'dd.MM.yyyy'}}</p>    
+                <p *ngIf="chosenCurrency$ | async as currency" class="fs-4">
+                    <span *ngIf="calculatePrice$(trip.price) | async as calculatedPrice">
+                        Price: {{calculatedPrice}} {{currency}}
+                    </span>
+                </p>
+                <div *ngIf="trip.availableTickets > 0 else noTrips" class="d-flex flex-column flex-xl-row">
+                    <div class="d-flex align-items-center fs-4">
+                        <span class="mx-1">
+                            Tickets available:  
+                        </span>
+                        <span [ngClass]="trip.availableTickets < 4 ? 'text-warning fw-bold' : 'text-dark'">
+                            {{trip.availableTickets}}
+                        </span>
+                    </div>
+
+                    <div class="d-flex my-3 justify-content-center">
+                        <a class="btn btn-light btn-outline-secondary m-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = decrementOrderCount(+counter.value)">-</a>
+                        <input type="number" class="col-3 rounded counter text-center" value="1" #counter>
+                        <a class="btn btn-light btn-outline-secondary m-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = incrementOrderCount(+counter.value, trip)">+</a>
+                        <a class="btn btn-light btn-outline-secondary my-2 px-4 py-3 d-flex justify-content-center">
+                            <span class="bi bi-cart-plus fs-4"></span>
+                        </a>
+                    </div>
+                </div>
+                
+                
+            </div>  
+        </div>
+
+        <p class="fs-5 fw-bold mx-3 mt-4">Description</p>
+        <p class="mx-3">{{trip.shortDescription}}</p>
+    </div>
+</div>
+  
+<ng-template #loading>
+<p class="my-4">Loading&hellip;</p>
+</ng-template>
+
+<ng-template #noTrips>
+    <p class="fw-bold fs-4 text-danger">SOLD OUT</p>
+</ng-template>

@@ -1,0 +1,40 @@
+<div class="d-flex flex-column flex-lg-row">
+    <div class="container col-12 col-lg-6 m-2">
+        <h1 class="text-start">Join us!</h1>
+        <h5 class="text-start mt-3">Discover Trip Consultor:</h5>
+    </div>
+    <div class="container col-12 col-lg-6 m-2">
+        <div class="card d-flex flex-column justify-content-center align-items-center p-5">
+            <form #form="ngForm" (submit)="onSubmit(form)" class="col-12">
+
+                <div *ngIf="isSignup" class="form-outline mb-3">
+                    <label class="form-label">Username</label>
+                    <input name="username" type="text" class="form-control" ngModel/>
+                </div>
+
+                <div class="form-outline mb-3">
+                    <label class="form-label">Email address</label>
+                    <input name="email" type="email" class="form-control" ngModel/>
+                </div>
+              
+                <div class="form-outline mb-3">
+                    <label class="form-label">Password</label>
+                    <input name="password" type="password" class="form-control" ngModel/>
+                </div>
+              
+                <div class="d-flex justify-content-between align-items-center">
+                    <button *ngIf="isLogin" class="btn btn-dark mb-4" type="submit">Login</button>
+                    <button *ngIf="isSignup" class="btn btn-dark mb-4" type="submit">Sign Up</button>
+                    <div *ngIf="isSignup" class="d-flex">
+                        <span class="text-center mt-2">Signed up?</span>
+                        <button  class="btn mb-4 text-decoration-underline" (click)="switchAuthMode()">Login</button>
+                    </div>
+                    <div *ngIf="isLogin" class="d-flex">
+                        <span class="text-center mt-2">Not a member?</span>
+                        <button  class="btn mb-4 text-decoration-underline" (click)="switchAuthMode()">Sign Up</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
