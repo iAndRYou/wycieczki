@@ -20,9 +20,9 @@
             {{ user.displayName }}
           </button>
           <div class="dropdown-menu dropleft" aria-labelledby="dropdownMenu">
-            <button class="dropdown-item" routerLink="profile">Profile</button>
+            <button class="dropdown-item" routerLink="history">History</button>
             <div class="dropdown-divider"></div>
-            <button class="dropdown-item" (click)="logout()">Logout</button>
+            <button class="dropdown-item text-danger" (click)="logout()">Logout</button>
           </div>
         </div>
       </div>

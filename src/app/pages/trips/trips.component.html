@@ -4,8 +4,8 @@
 </div>
   
 <div *ngIf="trips$ | async as trips; else loading" class="my-4">
-    <div *ngFor="let trip of trips" class="card d-flex flex-column p-2">
-        <div class="d-flex flex-column flex-md-row align-items-center m-3">
+    <div *ngFor="let trip of trips" class="card d-flex flex-column p-2 my-2 shadow">
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-evenly m-3">
             <img [src]="trip.imgs[0]" class="rounded-circle card-img-circle pointer" alt="..." loading="lazy" (click)="goToSpecified(trip)">
             
             <div class="d-flex flex-column align-content-start mx-4 mt-3">
@@ -17,7 +17,7 @@
                         Price: {{calculatedPrice}} {{currency}}
                     </span>
                 </p>
-                <div *ngIf="trip.availableTickets > 0 else noTrips" class="d-flex flex-column flex-xl-row">
+                <div *ngIf="trip.availableTickets > 0 else noTrips" class="d-flex flex-column justify-content-between">
                     <div class="d-flex align-items-center fs-4">
                         <span class="mx-1">
                             Tickets available:  
@@ -28,10 +28,10 @@
                     </div>
 
                     <div class="d-flex my-3 justify-content-center">
-                        <a class="btn btn-light btn-outline-secondary m-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = decrementOrderCount(+counter.value)">-</a>
-                        <input type="number" class="col-3 rounded counter text-center" value="1" #counter>
-                        <a class="btn btn-light btn-outline-secondary m-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = incrementOrderCount(+counter.value, trip)">+</a>
-                        <a class="btn btn-light btn-outline-secondary my-2 px-4 py-3 d-flex justify-content-center">
+                        <a *ngIf="+counter.value > 0" class="btn btn-light btn-outline-secondary mx-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = decrementOrderCount(+counter.value)">-</a>
+                        <input type="number" class="col-3 rounded counter text-center" value="1" min="0" max={{trip.availableTickets}} #counter disabled="disabled">
+                        <a *ngIf="+counter.value < trip.availableTickets" class="btn btn-light btn-outline-secondary mx-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = incrementOrderCount(+counter.value, trip)">+</a>
+                        <a class="btn btn-light btn-outline-secondary mx-2 px-4 py-3 d-flex justify-content-center">
                             <span class="bi bi-cart-plus fs-4"></span>
                         </a>
                     </div>
