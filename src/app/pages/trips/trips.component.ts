@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Observable, filter, map, of } from 'rxjs';
+import { Observable, filter, map, max, min, of } from 'rxjs';
 import { Trip } from '../../interfaces/trip.interface';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,8 @@ import { Router } from '@angular/router';
   styleUrl: './trips.component.css'
 })
 export class TripsComponent implements OnInit {
-  public trips$: Observable<Trip[] | undefined> = of(undefined);
+  public trips: Trip[] = [];
+  public currency = 'PLN';
   router: Router = inject(Router);
 
   constructor(
@@ -22,19 +23,17 @@ export class TripsComponent implements OnInit {
     private currencyService: CurrencyService
   ) { }
 
-  get chosenCurrency$() {
-    return this.currencyService.chosenCurrency$;
+  get getTripsData(): Trip[] {
+    return this.trips;
   }
 
   ngOnInit(): void {
-    this.trips$ = this.api.getAllTrips$;
-    this.trips$.subscribe(trips => console.log(trips));
+    this.api.getAllTrips$.subscribe(trips => this.trips = trips);
+    this.currencyService.chosenCurrency$.subscribe(currency => this.currency = currency);
   }
 
-  update(text: string) {
-    this.trips$ = this.api.getAllTrips$.pipe(
-      map(trips => trips.filter(trip => trip.name.toLowerCase().includes(text.toLowerCase())))
-    );
+  update(filer: string) {
+    this.api.getAllTrips$.subscribe(trips => this.trips = trips.filter(trip => trip.name.toLowerCase().includes(filer.toLowerCase())));
   }
 
   incrementOrderCount(count: number, trip: Trip) {
