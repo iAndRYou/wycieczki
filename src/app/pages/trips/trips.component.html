@@ -4,7 +4,7 @@
 </div>
   
 <div *ngIf="trips$ | async as trips; else loading" class="my-4">
-    <div *ngFor="let trip of trips" class="card d-flex flex-column p-2 my-2 shadow">
+    <div *ngFor="let trip of trips" class="card d-flex flex-column p-2 my-4 shadow">
         <div class="d-flex flex-column flex-md-row align-items-center justify-content-evenly m-3">
             <img [src]="trip.imgs[0]" class="rounded-circle card-img-circle pointer" alt="..." loading="lazy" (click)="goToSpecified(trip)">
             
