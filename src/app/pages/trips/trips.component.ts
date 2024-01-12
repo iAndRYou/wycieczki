@@ -1,39 +1,65 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Observable, filter, map, max, min, of } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Trip } from '../../interfaces/trip.interface';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { CurrencyService } from '../../services/currency.service';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { RatingComponent } from '../../components/rating/rating.component';
 
 @Component({
   selector: 'app-trips',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, RatingComponent],
   templateUrl: './trips.component.html',
   styleUrl: './trips.component.css'
 })
 export class TripsComponent implements OnInit {
   public trips: Trip[] = [];
-  public currency = 'PLN';
-  router: Router = inject(Router);
 
   constructor(
     private api: ApiService,
     private currencyService: CurrencyService
   ) { }
 
-  get getTripsData(): Trip[] {
-    return this.trips;
+  get currency$(): Observable<string> {
+    return this.currencyService.chosenCurrency$;
+  }
+
+  get highestPrice(): number {
+    if (this.trips.length === 0) {
+      return 0;
+    }
+    return this.trips.map(trip => trip.price).reduce((a, b) => Math.max(a, b));
+  }
+
+  get lowestPrice(): number {
+    if (this.trips.length === 0) {
+      return 0;
+    }
+    return this.trips.map(trip => trip.price).reduce((a, b) => Math.min(a, b));
   }
 
   ngOnInit(): void {
     this.api.getAllTrips$.subscribe(trips => this.trips = trips);
-    this.currencyService.chosenCurrency$.subscribe(currency => this.currency = currency);
   }
 
-  update(filer: string) {
-    this.api.getAllTrips$.subscribe(trips => this.trips = trips.filter(trip => trip.name.toLowerCase().includes(filer.toLowerCase())));
+  filterTrips(filer: string, startDate: string, endDate: string, minPrice: string, maxPrice: string) {
+    this.api.getAllTrips$.subscribe(trips => this.trips = trips
+      .filter(trip => trip.name.toLowerCase().includes(filer.toLowerCase()) || trip.location.toLowerCase().includes(filer.toLowerCase()))
+      .filter(trip => startDate ? trip.startDate.toDate() >= new Date(startDate) : true)
+      .filter(trip => endDate ? trip.endDate.toDate() <= new Date(endDate) : true)
+      .filter(trip => minPrice ? trip.price >= +minPrice : true)
+      .filter(trip => maxPrice ? trip.price <= +maxPrice : true)
+      );
+  }
+
+  checkBox(value: string) {
+    console.log(value);
+  }
+
+  calculatePrice$(price: number) {
+    return this.currencyService.calculatePrice$(price);
   }
 
   incrementOrderCount(count: number, trip: Trip) {
@@ -48,14 +74,6 @@ export class TripsComponent implements OnInit {
       return count.toString();
     }
     return (count - 1).toString();
-  }
-
-  calculatePrice$(price: number) {
-    return this.currencyService.calculatePrice$(price);
-  }
-
-  goToSpecified(trip: Trip) {
-    this.router.navigate(['/trips', trip.id]);
   }
 }
 

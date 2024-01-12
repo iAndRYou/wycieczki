@@ -1,0 +1,21 @@
+<div *ngIf="type === 'read-only'">
+    <div class="star-rating fs-4 text-warning">
+        <i class="bi bi-star-fill" *ngFor="let star of stars"></i>
+        <i class="bi bi-star-half" *ngIf="getRating % 1 !== 0"></i>
+        {{getRating | number: '1.1-1'}} ({{ratingsNumber}})
+    </div>
+</div>
+
+<div *ngIf="type === 'editable'">
+    <div class="star-rating fs-4 text-warning">
+        <i class="bi bi-star-fill" *ngFor="let star of stars; index as i" (click)="rate(i + 1)"></i>
+        <i class="bi bi-star-half" *ngIf="getRating % 1 !== 0"></i>
+    </div>
+</div>
+
+<div *ngIf="type === 'label'">
+    <div class="star-rating text-warning mx-1">
+        <i class="bi bi-star-fill" *ngFor="let star of stars; index as i" (click)="rate(i + 1)"></i>
+    </div>
+</div>
+  

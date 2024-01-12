@@ -7,6 +7,7 @@ import { AdminComponent } from './pages/admin/admin.component';
 import { HistoryComponent } from './pages/history/history.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { AuthGuard } from '@angular/fire/auth-guard';
+import { TripDetailsComponent } from './pages/trip-details/trip-details.component';
 
 export const routes: Routes = [
     { 
@@ -29,27 +30,29 @@ export const routes: Routes = [
     },
     {
       path: 'trips/:id',
-      component: TripsComponent,
-      title: 'Trip Detail',
-      data: { preload: false },
+      component: TripDetailsComponent,
+      title: 'Trip Details',
     },
     { 
       path: 'admin',
       component: AdminComponent,
       title: 'Admin',
       data: { preload: false },
+      canActivate: [AuthGuard],
     },
     { 
       path: 'history',
       component: HistoryComponent,
       title: 'History',
       data: { preload: false },
+      canActivate: [AuthGuard],
     },
     { 
       path: 'cart',
       component: CartComponent,
       title: 'Cart',
       data: { preload: false },
+      canActivate: [AuthGuard],
     },
     { 
       path: 'login',

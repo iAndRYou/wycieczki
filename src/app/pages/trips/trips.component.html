@@ -1,30 +1,71 @@
-<div class="input-group">
-    <input type="text" class="form-control bg-light" placeholder="Search" #filter (keyup)="update(filter.value)">
-    <button class="btn btn-light btn-outline-secondary" type="button" (click)="filter.value=''; update(filter.value)">Clear</button>
+<div class="input-group my-2">
+    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+    <input type="text" class="form-control bg-light" placeholder="Search" #filter (keyup)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
+    <button class="btn btn-outline-danger" (click)="filter.value = ''; startDate.value = ''; endDate.value = ''; filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)"><i class="bi bi-x"></i></button>
 </div>
-  
-<div *ngFor="let trip of trips" class="card d-flex flex-column p-2 my-4 shadow">
+
+<div class="input-group my-2">
+    <span class="input-group-text bg-light">Between</span>
+    <input type="date" class="form-control bg-light" #startDate (change)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
+    <span class="input-group-text bg-light">-</span>
+    <input type="date" class="form-control bg-light" #endDate (change)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
+</div>
+
+<div class="input-group my-2">
+    <span class="input-group-text bg-light">Min price</span>
+    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice$(lowestPrice) | async"
+        #minPrice (keyup) ="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
+    <span class="input-group-text bg-light">Max price</span>
+    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice$(highestPrice) | async"
+        #maxPrice (keyup) ="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
+</div>
+
+<div class="input-group mb-3">
+    <span class="input-group-text bg-light form-control">Stars</span>
+    <div class="input-group-text bg-light">
+        <app-rating [value]="3" type="label"></app-rating>
+        <input type="checkbox" value="true" #threeStars 
+            (change)="threeStars.value === 'inactive' ? threeStars.value = 'active' : threeStars.value = 'inactive';">
+    </div>
+    <div class="input-group-text bg-light">
+        <app-rating [value]="4" type="label"></app-rating>
+        <input type="checkbox" value="inactive" #fourStars
+            (change)="fourStars.value === 'inactive' ? fourStars.value = 'active' : fourStars.value = 'inactive';">
+    </div>
+    <div class="input-group-text bg-light">
+        <app-rating [value]="5" type="label"></app-rating>
+        <input type="checkbox" value="inactive" #fiveStars
+            (change)="fiveStars.value === 'inactive' ? fiveStars.value = 'active' : fiveStars.value = 'inactive';">
+    </div>
+  </div>
+
+<div *ngFor="let trip of trips" 
+    [ngClass]="trip.price === lowestPrice ? 'card d-flex flex-column p-2 my-4 shadow border-danger' 
+            : trip.price === highestPrice ? 'card d-flex flex-column p-2 my-4 shadow border-success' 
+            : 'card d-flex flex-column p-2 my-4 shadow'">
     <div class="d-flex flex-column flex-md-row align-items-center justify-content-evenly m-3">
-        <img [src]="trip.imgs[0]" class="rounded-circle card-img-circle pointer" alt="..." loading="lazy" (click)="goToSpecified(trip)">
+        
+        <img [routerLink]="['/trips', trip.id]"  [src]="trip.imgs[0]" class="rounded-circle card-img-circle pointer shadow" alt="..." loading="lazy">
         
         <div class="d-flex flex-column align-content-start mx-4 mt-3">
-            <a class="fs-3 text-decoration-none text-dark pointer" (click)="goToSpecified(trip)">{{ trip.name | uppercase}}</a>
-            <p class="fs-5 fw-bold">{{trip.location | uppercase}}</p>
-            <p>{{trip.startDate.toDate() | date:'dd.MM.yyyy'}} - {{trip.endDate.toDate() | date:'dd.MM.yyyy'}}</p>    
+            <app-rating [ratings]="trip.ratings"></app-rating>
             
-            <span *ngIf="calculatePrice$(trip.price) | async as calculatedPrice" class="fs-4">
-                Price: {{calculatedPrice}} {{currency}}
-            </span>
+            <a [routerLink]="['/trips', trip.id]" class="fs-3 text-decoration-none text-dark pointer">{{ trip.name | uppercase}}</a>
+            
+            <p class="fs-5 fw-bold">{{trip.location | uppercase}}</p>
+            
+            <p class="fs-5 fw-lighter">{{trip.startDate.toDate() | date:'dd.MM.yyyy'}} - {{trip.endDate.toDate() | date:'dd.MM.yyyy'}}</p>    
+            
+            <div *ngIf="currency$ | async as currency">
+                <span *ngIf="calculatePrice$(trip.price) | async as calculatedPrice" class="fs-4">
+                    Price: {{calculatedPrice | number : '1.2-2'}} {{currency}}
+                </span>
+            </div>
             
             <div *ngIf="trip.availableTickets > 0 else noTrips" class="d-flex flex-column justify-content-between">
-                <div class="d-flex align-items-center fs-4">
-                    <span class="mx-1">
-                        Tickets available:  
-                    </span>
-                    <span [ngClass]="trip.availableTickets < 4 ? 'text-warning fw-bold' : 'text-dark'">
-                        {{trip.availableTickets}}
-                    </span>
-                </div>
+                <span [ngClass]="trip.availableTickets < 4 ? 'text-warning fw-bold fs-4 my-2' : 'text-dark fs-4 my-2'">
+                    {{trip.availableTickets}} tickets available
+                </span>
 
                 <div class="d-flex my-3 justify-content-center">
                     <a *ngIf="+counter.value > 0" class="btn btn-light btn-outline-secondary mx-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = decrementOrderCount(+counter.value)">-</a>
@@ -35,8 +76,7 @@
                     </a>
                 </div>
             </div>
-            
-            
+
         </div>  
     </div>
 

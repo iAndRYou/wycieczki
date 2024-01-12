@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collectionData, collection } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, doc, docData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Trip } from '../interfaces/trip.interface';
 
@@ -11,5 +11,9 @@ export class ApiService {
   
   get getAllTrips$() {
     return collectionData(collection(this.firestore, 'trip')) as Observable<Trip[]>;
+  }
+
+  getTrip$(id: string) {
+    return docData(doc(this.firestore, 'trip', id)) as Observable<Trip>;
   }
 }

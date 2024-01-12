@@ -1,5 +1,6 @@
 import { Timestamp } from "@angular/fire/firestore";
 import { Review } from "./review.interface";
+import { Rating } from "./rating.interface";
 
 export class Trip {
     constructor(
@@ -18,8 +19,14 @@ export class Trip {
         public mapSrc: string,
 
         public price: number,
-        public ratings: number,
+        public ratings: Rating[],
         public reviews: Review[],
-        public sumRating: number,
     ) { }
+
+    get averageRating(): number {
+        if (this.ratings.length === 0) {
+            return 0;
+        }
+        return this.ratings.map(rating => rating.rating).reduce((a, b) => a + b, 0) / this.ratings.length;
+    }
 }
