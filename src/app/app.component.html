@@ -26,9 +26,9 @@
           </div>
         </div>
       </div>
-      <div *ngIf="chosenCurrency$ | async as currency" class="dropdown">
+      <div class="dropdown">
         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{ currency }}
+          {{ currency.name }}
         </button>
         <div class="dropdown-menu dropleft" aria-labelledby="dropdownMenu">
           <button class="dropdown-item" (click)="setCurrency('USD')">USD</button>
@@ -39,8 +39,8 @@
       </div>
       <a *ngIf="authState$ | async" class="nav-link p-2" routerLink="cart">
         <i class="bi bi-cart"></i>
-        <span *ngIf="chosenCurrency$ | async as currency">
-          0 {{ currency }} | 0
+        <span>
+          0 {{ currency.name }} | 0
         </span>
       </a>
     </div>

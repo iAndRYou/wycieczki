@@ -13,11 +13,10 @@
 
 <p class="fs-4 fw-lighter">{{trip.startDate.toDate() | date:'dd.MM.yyyy'}} - {{trip.endDate.toDate() | date:'dd.MM.yyyy'}}</p>
 
-<div *ngIf="currency$ | async as currency">
-    <span *ngIf="calculatePrice$(trip.price) | async as calculatedPrice" class="fs-4">
-        Price: {{calculatedPrice | number : '1.2-2'}} {{currency}}
-    </span>
-</div>
+<span class="fs-4">
+    Price: {{calculatePrice(trip.price) | number : '1.2-2'}} {{currency.name}}
+</span>
+
 
 <p class="fs-5 fw-bold mt-4">Description</p>
 <p class="fs-6">{{trip.description}}</p>

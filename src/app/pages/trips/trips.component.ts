@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Trip } from '../../interfaces/trip.interface';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
-import { CurrencyService } from '../../services/currency.service';
 import { RouterLink } from '@angular/router';
 import { RatingComponent } from '../../components/rating/rating.component';
+import { Currency } from '../../interfaces/currency.interface';
 
 @Component({
   selector: 'app-trips',
@@ -16,15 +15,11 @@ import { RatingComponent } from '../../components/rating/rating.component';
 })
 export class TripsComponent implements OnInit {
   public trips: Trip[] = [];
+  currency: Currency = {} as Currency;
 
   constructor(
     private api: ApiService,
-    private currencyService: CurrencyService
   ) { }
-
-  get currency$(): Observable<string> {
-    return this.currencyService.chosenCurrency$;
-  }
 
   get highestPrice(): number {
     if (this.trips.length === 0) {
@@ -42,6 +37,7 @@ export class TripsComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.getAllTrips$.subscribe(trips => this.trips = trips);
+    this.api.currency$.subscribe(currency => this.currency = currency);
   }
 
   filterTrips(filer: string, startDate: string, endDate: string, minPrice: string, maxPrice: string) {
@@ -58,8 +54,8 @@ export class TripsComponent implements OnInit {
     console.log(value);
   }
 
-  calculatePrice$(price: number) {
-    return this.currencyService.calculatePrice$(price);
+  calculatePrice(price: number) {
+    return this.currency.multiplier * price;
   }
 
   incrementOrderCount(count: number, trip: Trip) {

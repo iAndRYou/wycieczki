@@ -3,11 +3,10 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Trip } from '../../interfaces/trip.interface';
 import { ApiService } from '../../services/api.service';
-import { CurrencyService } from '../../services/currency.service';
-import { Observable } from 'rxjs';
 import { CarouselModule } from 'ngx-bootstrap/carousel'
 import { RatingComponent } from '../../components/rating/rating.component';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
+import { Currency } from '../../interfaces/currency.interface';
 
 @Component({
   selector: 'app-trip-details',
@@ -20,10 +19,10 @@ export class TripDetailsComponent implements OnInit {
   id: string = '';
   router: Router = inject(Router);
   public trip: Trip = {} as Trip;
+  currency: Currency = {} as Currency;
 
   constructor(
     private api: ApiService,
-    private currencyService: CurrencyService,
     private route: ActivatedRoute
   ) {
     this.id = this.route.snapshot.paramMap.get('id') as string;
@@ -31,13 +30,10 @@ export class TripDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.getTrip$(this.id).subscribe(trip => this.trip = trip);
+    this.api.currency$.subscribe(currency => this.currency = currency);
   }
 
-  get currency$(): Observable<string> {
-    return this.currencyService.chosenCurrency$;
-  }
-
-  calculatePrice$(price: number) {
-    return this.currencyService.calculatePrice$(price);
+  calculatePrice(price: number) {
+    return this.currency.multiplier * price;
   }
 }

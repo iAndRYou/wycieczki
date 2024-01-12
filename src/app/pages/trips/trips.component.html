@@ -13,10 +13,10 @@
 
 <div class="input-group my-2">
     <span class="input-group-text bg-light">Min price</span>
-    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice$(lowestPrice) | async"
+    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice(lowestPrice)"
         #minPrice (keyup) ="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
     <span class="input-group-text bg-light">Max price</span>
-    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice$(highestPrice) | async"
+    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice(highestPrice)"
         #maxPrice (keyup) ="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
 </div>
 
@@ -55,12 +55,8 @@
             <p class="fs-5 fw-bold">{{trip.location | uppercase}}</p>
             
             <p class="fs-5 fw-lighter">{{trip.startDate.toDate() | date:'dd.MM.yyyy'}} - {{trip.endDate.toDate() | date:'dd.MM.yyyy'}}</p>    
-            
-            <div *ngIf="currency$ | async as currency">
-                <span *ngIf="calculatePrice$(trip.price) | async as calculatedPrice" class="fs-4">
-                    Price: {{calculatedPrice | number : '1.2-2'}} {{currency}}
-                </span>
-            </div>
+                
+            Price: {{calculatePrice(trip.price) | number : '1.2-2'}} {{currency.name}}
             
             <div *ngIf="trip.availableTickets > 0 else noTrips" class="d-flex flex-column justify-content-between">
                 <span [ngClass]="trip.availableTickets < 4 ? 'text-warning fw-bold fs-4 my-2' : 'text-dark fs-4 my-2'">
