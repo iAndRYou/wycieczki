@@ -37,9 +37,9 @@
         <input type="checkbox" value="inactive" #fiveStars
             (change)="fiveStars.value === 'inactive' ? fiveStars.value = 'active' : fiveStars.value = 'inactive';">
     </div>
-  </div>
+</div>
 
-<div *ngFor="let trip of trips" 
+<section *ngFor="let trip of trips" 
     [ngClass]="trip.price === lowestPrice ? 'card d-flex flex-column p-2 my-4 shadow border-danger' 
             : trip.price === highestPrice ? 'card d-flex flex-column p-2 my-4 shadow border-success' 
             : 'card d-flex flex-column p-2 my-4 shadow'">
@@ -60,14 +60,15 @@
             
             <div *ngIf="trip.availableTickets > 0 else noTrips" class="d-flex flex-column justify-content-between">
                 <span [ngClass]="trip.availableTickets < 4 ? 'text-warning fw-bold fs-4 my-2' : 'text-dark fs-4 my-2'">
-                    {{trip.availableTickets}} tickets available
+                    Tickets available: {{trip.availableTickets}} 
                 </span>
 
                 <div class="d-flex my-3 justify-content-center">
-                    <a *ngIf="+counter.value > 0" class="btn btn-light btn-outline-secondary mx-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = decrementOrderCount(+counter.value)">-</a>
+                    <a *ngIf="+counter.value > 0" class="btn btn-light btn-outline-dark mx-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = decrementOrderCount(+counter.value)">-</a>
                     <input type="number" class="col-3 rounded counter text-center" value="1" min="0" max={{trip.availableTickets}} #counter disabled="disabled">
-                    <a *ngIf="+counter.value < trip.availableTickets" class="btn btn-light btn-outline-secondary mx-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = incrementOrderCount(+counter.value, trip)">+</a>
-                    <a class="btn btn-light btn-outline-secondary mx-2 px-4 py-3 d-flex justify-content-center">
+                    <a *ngIf="+counter.value < trip.availableTickets" class="btn btn-light btn-outline-dark mx-2 px-4 py-3 d-flex justify-content-center fs-4" (click)="counter.value = incrementOrderCount(+counter.value, trip)">+</a>
+                    <a class="btn btn-light btn-outline-dark mx-2 px-4 py-3 d-flex justify-content-center"
+                    (click)="addItemToCart(trip!, +counter.value)">
                         <span class="bi bi-cart-plus fs-4"></span>
                     </a>
                 </div>
@@ -78,7 +79,9 @@
 
     <p class="fs-5 fw-bold mx-3 mt-4">Description</p>
     <p class="mx-3">{{trip.shortDescription}}</p>
-</div>
+</section>
+
+<app-cart [type]="'float'"></app-cart>
   
 <ng-template #loading>
 <p class="my-4">Loading&hellip;</p>

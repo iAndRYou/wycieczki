@@ -1,1 +1,69 @@
-<p>cart works!</p>
+<div *ngIf="type === 'default'">
+    <div class="d-flex flex-row justify-content-between align-items-baseline">
+        <p class="fs-3 my-4 fw-bold">
+            YOUR CART
+        </p>
+    </div>
+    
+    <div *ngIf="cart.length == 0" class="d-flex flex-column align-items-center">
+        <p class="fs-3 my-4 fw-light">
+            Your cart is empty
+        </p>
+        <a class="btn" routerLink="/trips"><i class="bi bi-arrow-left"> Catalogue</i></a>
+    </div>
+    
+    <div *ngFor="let item of cart; index as i" class="my-4">
+        <div class="m-3 d-flex flex-column flex-md-row justify-content-md-between">
+            <div class="d-flex flex-column">
+                <span class="fs-1">
+                    {{trips[i]!.name}}
+                </span>
+    
+                <p class="fs-4 fw-lighter">
+                    {{trips[i]!.startDate.toDate() | date:'dd.MM.yyyy'}} - {{trips[i]!.endDate.toDate() | date:'dd.MM.yyyy'}}
+                </p>
+                
+                <span class="fs-4 fw-light">
+                    Ticket price: {{calculatePrice(trips[i]!.price) | number : '1.2-2'}} {{currency.name}}
+                </span>
+                <span [ngClass]="trips[i]!.availableTickets < 4 ? 'text-warning fw-bold fs-4 my-2' : 'text-dark fs-4 my-2'">
+                    Tickets available: {{trips[i]!.availableTickets}}
+                </span>
+                
+            </div>
+            
+            <div class="d-flex flex-column">
+                <div class="d-flex flex-row align-items-center my-2">
+                    <div class="fs-3 bw-bold">Tickets:</div>
+                    <button class="mx-2 btn btn-light btn-outline-dark" (click)="subtractItem(i)"><i class="bi bi-dash"></i></button>
+                    <div class="fs-3 bw-bold">{{item.quantity}}</div>
+                    <button [ngClass]="trips[i]!.availableTickets > 0 ? 'mx-2 btn btn-light btn-outline-dark' : 'mx-2 btn btn-light btn-outline-dark disabled'" class="mx-2 btn btn-light btn-outline-dark" 
+                        (click)="addItem(i)"><i class="bi bi-plus"></i></button>
+                </div>
+                <div class="fs-3 bw-bold">Price: {{calculatePrice(trips[i].price) * item.quantity | number : '1.2-2'}} {{currency.name}}</div>
+            </div>
+        </div>
+    
+        <hr>
+    </div>
+    
+    <div *ngIf="totalItems > 0" class="d-flex flex-column">
+        <span class="fs-3 fw-bold">
+            Price total: {{calculatePrice(totalTripsPrice) | number : '1.2-2'}} {{currency.name}}
+        </span>
+        <span class="fs-3 fw-bold">
+            Items total: {{totalItems}}
+        </span>
+    </div>
+</div>
+
+<div *ngIf="type==='menu'" class="d-flex">
+    <i class="bi bi-cart"></i>
+    <span class="mx-2">
+        {{calculatePrice(totalTripsPrice) | number : '1.2-2'}} {{currency.name}} | {{totalItems}}
+    </span>
+</div>
+
+<div *ngIf="type==='float'" [ngClass]="totalItems > 10 ? 'float bg-success text-light p-2 rounded' : 'float bg-danger text-light p-2 rounded'">
+    {{totalItems}} ITEMS IN CART
+</div>

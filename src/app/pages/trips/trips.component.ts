@@ -5,20 +5,24 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { RatingComponent } from '../../components/rating/rating.component';
 import { Currency } from '../../interfaces/currency.interface';
+import { AuthService } from '../../services/auth.service';
+import { CartComponent } from '../cart/cart.component';
 
 @Component({
   selector: 'app-trips',
   standalone: true,
-  imports: [CommonModule, RouterLink, RatingComponent],
+  imports: [CommonModule, RouterLink, RatingComponent, CartComponent],
   templateUrl: './trips.component.html',
   styleUrl: './trips.component.css'
 })
 export class TripsComponent implements OnInit {
+  userId: string = '';
   public trips: Trip[] = [];
   currency: Currency = {} as Currency;
 
   constructor(
     private api: ApiService,
+    private authService: AuthService
   ) { }
 
   get highestPrice(): number {
@@ -38,6 +42,11 @@ export class TripsComponent implements OnInit {
   ngOnInit(): void {
     this.api.getAllTrips$.subscribe(trips => this.trips = trips);
     this.api.currency$.subscribe(currency => this.currency = currency);
+    this.authService.authState$.subscribe(user => {
+      if (user) {
+        this.userId = user.uid;
+      }
+    });
   }
 
   filterTrips(filer: string, startDate: string, endDate: string, minPrice: string, maxPrice: string) {
@@ -70,6 +79,17 @@ export class TripsComponent implements OnInit {
       return count.toString();
     }
     return (count - 1).toString();
+  }
+
+  async addItemToCart(trip: Trip, count: number) {
+    if (count <= 0 || count > trip!.availableTickets) {
+      return;
+    }
+    await this.api.updateItemInCart(this.userId, trip.id, count);
+
+    var newTrip = trip;
+    newTrip.availableTickets -= count;
+    await this.api.updateTrip(newTrip);
   }
 }
 

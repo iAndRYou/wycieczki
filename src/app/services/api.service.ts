@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collectionData, collection, doc, docData, addDoc, updateDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, collectionData, collection, doc, docData, updateDoc, deleteDoc, addDoc, setDoc} from '@angular/fire/firestore';
+import { Observable, firstValueFrom } from 'rxjs';
 import { Trip } from '../interfaces/trip.interface';
 import { CartItem } from '../interfaces/cart-item.interface';
 import { Currency } from '../interfaces/currency.interface';
@@ -42,18 +42,23 @@ export class ApiService {
     return collectionData(collection(this.firestore, 'users', userId, 'cart')) as Observable<CartItem[]>;
   }
 
-  async updateItemInCart(userId: string, cartItem: CartItem) {
-    // check if doc 'users/userId/cart/cartItem.tripId' exists
-    // if it does, update it
-    // if it doesn't, create it
+  async updateItemInCart(userId: string, tripId: string, quantity?: number, selected?: boolean) {
     try {
-      var docRef = doc(this.firestore, 'users', userId, 'cart', cartItem.tripId)
-      await updateDoc(docRef, {'quantity': cartItem.quantity});
-      console.log('updated');
+      var docRef = doc(this.firestore, 'users', userId, 'cart', tripId);
+      
+      var currentCart = await firstValueFrom(docData(docRef)) as CartItem;
+      currentCart.quantity += quantity? quantity : 0;
+      currentCart.selected = selected? selected : currentCart.selected;
+
+      await updateDoc(docRef, {...currentCart});
     } catch (error) {
-      await addDoc(collection(this.firestore, 'users', userId, 'cart', cartItem.tripId), cartItem);
-      console.log('added');
+      var docRef = doc(this.firestore, 'users', userId, 'cart', tripId)
+      await setDoc(docRef, { tripId: tripId, quantity: quantity!, selected: true });
     }
+  }
+
+  async removeItemFromCart(userId: string, cartItem: CartItem) {
+    await deleteDoc(doc(this.firestore, 'users', userId, 'cart', cartItem.tripId));
   }
 
   async addNewTrip(trip: Trip) {

@@ -5,11 +5,12 @@ import { AuthService } from './services/auth.service';
 import { PreloadingService } from './services/preloading.service';
 import { ApiService } from './services/api.service';
 import { Currency } from './interfaces/currency.interface';
+import { CartComponent } from './pages/cart/cart.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, CartComponent],
   providers: [AuthService, PreloadingService, ApiService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

@@ -38,10 +38,7 @@
         </div>
       </div>
       <a *ngIf="authState$ | async" class="nav-link p-2" routerLink="cart">
-        <i class="bi bi-cart"></i>
-        <span>
-          0 {{ currency.name }} | 0
-        </span>
+        <app-cart type="menu"></app-cart>
       </a>
     </div>
   </div>
@@ -51,7 +48,7 @@
   <router-outlet></router-outlet>
 </div>
 
-<div class="bg-light col-12 p-5 pt-3 fixed-bottom">
+<div class="bg-light col-12 p-3 pt-3 fixed-bottom">
   <div class="container">
     <footer class="d-flex flex-wrap justify-content-between align-items-center border-top">
       <p class="col-md-4 mb-0 text-muted">© 2024 Trip Consultor</p>

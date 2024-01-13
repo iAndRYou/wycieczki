@@ -12,7 +12,7 @@ import { TripDetailsComponent } from './pages/trip-details/trip-details.componen
 export const routes: Routes = [
     { 
       path: 'home',
-      component: HomeComponent,
+      redirectTo: '/trips',
       title: 'Trip Consultor',
       data: { preload: false },
     },
