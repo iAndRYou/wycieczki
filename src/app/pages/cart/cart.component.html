@@ -18,6 +18,8 @@
                 <span class="fs-1">
                     {{trips[i]!.name}}
                 </span>
+
+                <p class="fs-4 fw-bold">{{trips[i]!.location | uppercase}}</p>
     
                 <p class="fs-4 fw-lighter">
                     {{trips[i]!.startDate.toDate() | date:'dd.MM.yyyy'}} - {{trips[i]!.endDate.toDate() | date:'dd.MM.yyyy'}}
