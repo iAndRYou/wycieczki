@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collectionData, collection, doc, docData, updateDoc, deleteDoc, addDoc, setDoc} from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, doc, docData, updateDoc, deleteDoc, addDoc, setDoc, Timestamp} from '@angular/fire/firestore';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Trip } from '../interfaces/trip.interface';
 import { CartItem } from '../interfaces/cart-item.interface';
 import { Currency } from '../interfaces/currency.interface';
 import { environment } from '../../environments/environment';
+import { HistoryItem } from '../interfaces/history-item.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -42,13 +43,17 @@ export class ApiService {
     return collectionData(collection(this.firestore, 'users', userId, 'cart')) as Observable<CartItem[]>;
   }
 
+  getHistory$(userId: string) {
+    return collectionData(collection(this.firestore, 'users', userId, 'history')) as Observable<HistoryItem[]>;
+  }
+
   async updateItemInCart(userId: string, tripId: string, quantity?: number, selected?: boolean) {
     try {
       var docRef = doc(this.firestore, 'users', userId, 'cart', tripId);
       
       var currentCart = await firstValueFrom(docData(docRef)) as CartItem;
       currentCart.quantity += quantity? quantity : 0;
-      currentCart.selected = selected? selected : currentCart.selected;
+      currentCart.selected = selected? selected : false;
 
       await updateDoc(docRef, {...currentCart});
     } catch (error) {
@@ -58,6 +63,24 @@ export class ApiService {
   }
 
   async removeItemFromCart(userId: string, cartItem: CartItem) {
+    await deleteDoc(doc(this.firestore, 'users', userId, 'cart', cartItem.tripId));
+  }
+
+  async buyItemFromCart(userId: string, cartItem: CartItem) {
+    var tripDocRef = doc(this.firestore, 'trip', cartItem.tripId);
+    var trip = await firstValueFrom(docData(tripDocRef)) as Trip;
+
+    await addDoc(collection(this.firestore, 'users', userId, 'history'), {
+        quantity: cartItem.quantity,
+        purchaseTimestamp: Timestamp.now(),
+        tripId: trip.id,
+        name: trip.name,
+        location: trip.location,
+        price: trip.price,
+        startDateTimestamp: trip.startDate,
+        endDateTimestamp: trip.endDate,
+      } as HistoryItem);
+    
     await deleteDoc(doc(this.firestore, 'users', userId, 'cart', cartItem.tripId));
   }
 

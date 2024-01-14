@@ -1,1 +1,57 @@
-<p>history works!</p>
+<div class="d-flex flex-row justify-content-between align-items-baseline">
+    <p class="fs-3 my-4 fw-bold">
+        YOUR HISTORY
+    </p>
+</div>
+
+<div *ngIf="history.length == 0" class="d-flex flex-column align-items-center">
+    <p class="fs-3 my-4 fw-light">
+        You have no trips ordered
+    </p>
+</div>
+
+<div *ngFor="let item of history; index as i" class="my-4">
+    <div class="m-3 d-flex flex-column flex-md-row justify-content-md-between">
+        <div class="d-flex flex-column justify-content-end order-2 order-md-1 col-12 col-md-6">
+            <span class="fs-3">
+                {{item.name | uppercase}}
+            </span>
+
+            <p class="fs-5 fw-bold">{{item.location | uppercase}}</p>
+            
+            <div class="d-flex flex-column fs-4 mb-2">
+                <div class="d-flex justify-content-between fw-light">
+                    <span>Bought:</span>
+                    <span class="ms-5 mb-3">{{item.purchaseTimestamp.toDate() | date:'dd.MM.yyyy'}}</span>
+                </div>
+
+                <div class="d-flex justify-content-between fw-light">
+                    <span>Ticket price:</span>
+                    <span class="ms-5 mb-3">{{calculatePrice(item) | number : '1.2-2'}} {{currency.name}}</span>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <span>Tickets:</span>
+                    <span class="ms-5">{{item.quantity}}</span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <span>Total price:</span>
+                    <span class="ms-5">{{calculateTotalPrice(item) | number : '1.2-2'}} {{currency.name}}</span>
+                </div>
+            </div>
+
+        </div>
+        
+        <div [ngClass]="getStatusColor(item) + 'd-flex flex-column justify-content-center order-1 order-md-2 fs-4 mb-4 mb-md-0'">
+            <span class="fs-2 fw-bold">{{getStatus(item) | uppercase}}</span>
+            <div class="d-flex justify-content-start justify-content-md-between">
+                <span>{{item.startDateTimestamp.toDate() | date:'dd.MM.yyyy'}}</span>
+                <span class="ms-3">-</span>
+                <span class="ms-3">{{item.endDateTimestamp.toDate() | date:'dd.MM.yyyy'}}</span>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+</div>

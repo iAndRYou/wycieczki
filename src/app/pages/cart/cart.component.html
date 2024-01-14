@@ -14,50 +14,89 @@
     
     <div *ngFor="let item of cart; index as i" class="my-4">
         <div class="m-3 d-flex flex-column flex-md-row justify-content-md-between">
-            <div class="d-flex flex-column">
-                <span class="fs-1">
-                    {{trips[i]!.name}}
+            <div class="d-flex flex-column justify-content-end">
+                <span class="fs-3">
+                    {{trips[i]!.name | uppercase}}
                 </span>
 
-                <p class="fs-4 fw-bold">{{trips[i]!.location | uppercase}}</p>
+                <p class="fs-5 fw-bold">{{trips[i]!.location | uppercase}}</p>
     
                 <p class="fs-4 fw-lighter">
                     {{trips[i]!.startDate.toDate() | date:'dd.MM.yyyy'}} - {{trips[i]!.endDate.toDate() | date:'dd.MM.yyyy'}}
                 </p>
                 
-                <span class="fs-4 fw-light">
+                <span class="fs-4 fw-bold">
                     Ticket price: {{calculatePrice(trips[i]!.price) | number : '1.2-2'}} {{currency.name}}
                 </span>
-                <span [ngClass]="trips[i]!.availableTickets < 4 ? 'text-warning fw-bold fs-4 my-2' : 'text-dark fs-4 my-2'">
+
+                <span *ngIf="trips![i].availableTickets else noTrips" [ngClass]="trips[i]!.availableTickets < 4 ? 'text-warning fw-bold fs-4 my-2' : 'text-dark fs-4 my-2'">
                     Tickets available: {{trips[i]!.availableTickets}}
                 </span>
                 
             </div>
             
-            <div class="d-flex flex-column">
-                <div class="d-flex flex-row align-items-center my-2">
-                    <div class="fs-3 bw-bold">Tickets:</div>
-                    <button class="mx-2 btn btn-light btn-outline-dark" (click)="subtractItem(i)"><i class="bi bi-dash"></i></button>
-                    <div class="fs-3 bw-bold">{{item.quantity}}</div>
-                    <button [ngClass]="trips[i]!.availableTickets > 0 ? 'mx-2 btn btn-light btn-outline-dark' : 'mx-2 btn btn-light btn-outline-dark disabled'" class="mx-2 btn btn-light btn-outline-dark" 
-                        (click)="addItem(i)"><i class="bi bi-plus"></i></button>
+            <div class="d-flex flex-column justify-content-end col-12 col-md-5">
+                <div class="d-flex flex-row align-items-center justify-content-between my-2">
+                    <div class="fs-3 bw-bold me-4">Tickets:</div>
+                    <div class="d-flex">
+                        <button class="me-4 btn btn-light btn-outline-dark" 
+                            (click)="subtractItem(i)"><i class="bi bi-dash"></i></button>
+                        <div class="fs-3 bw-bold text-center me-4">{{item.quantity}}</div>
+                        <button [ngClass]="trips[i]!.availableTickets > 0 ? 'btn btn-light btn-outline-dark' : 'btn btn-light btn-outline-dark disabled'" 
+                            (click)="addItem(i)"><i class="bi bi-plus"></i></button>
+                    </div>
                 </div>
-                <div class="fs-3 bw-bold">Price: {{calculatePrice(trips[i].price) * item.quantity | number : '1.2-2'}} {{currency.name}}</div>
+
+                <div class="d-flex justify-content-between fs-3 bw-bold">
+                    <span>Price:</span>
+                    <span>{{calculatePrice(trips[i]!.price) * item.quantity | number : '1.2-2'}} {{currency.name}}</span>
+                </div>
+                
+                <div class="fs-5 fw-bold d-flex flex-row align-items-center justify-content-between mt-2">
+                    <span [ngClass]="item.selected ? 'text-success' : 'text-dark'">Include in order:</span>
+                    <i [ngClass]="item.selected ? 'bi bi-bag-check-fill fs-1 text-success' : 'bi bi-bag fs-1 text-dark'" 
+                        (click)="switchSelectItem(i)"></i>
+                </div>
+                
+                <button class="btn btn-dark mt-4 p-2 fs-5" (click)="buyItem(i)">Buy</button>
             </div>
         </div>
     
         <hr>
     </div>
     
-    <div *ngIf="totalItems > 0" class="d-flex flex-column">
-        <span class="fs-3 fw-bold">
-            Price total: {{calculatePrice(totalTripsPrice) | number : '1.2-2'}} {{currency.name}}
-        </span>
-        <span class="fs-3 fw-bold">
-            Items total: {{totalItems}}
-        </span>
+    <div *ngIf="totalItems > 0" class="d-flex flex-column flex-md-row justify-content-between">
+        <div class="d-flex flex-column fs-3 mb-5 fs-2 col-12 col-md-5">
+            <div class="d-flex justify-content-between">
+                <span>Cart:</span>
+                <span class="ms-5">{{totalItems}}</span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <span>Total:</span>
+                <span class="ms-5">{{calculatePrice(totalTripsPrice) | number : '1.2-2'}}</span>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column fs-3 fs-2 fw-bold text-success col-12 col-md-5">
+            <div class="d-flex justify-content-between">
+                <span>Order:</span>
+                <span class="ms-5">{{totalSelectedItems}}</span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <span>Total:</span>
+                <span class="ms-5">{{calculatePrice(totalSelectedTripsPrice) | number : '1.2-2'}}</span>
+            </div>
+
+            <button class="btn btn-light btn-outline-success mt-4 p-2 fs-5" (click)="buySelectedItems()">Order</button>
+        </div>        
     </div>
 </div>
+
+<ng-template #noTrips>
+    <p class="text-danger fw-bold fs-4 my-2">SOLD OUT</p>
+</ng-template>
 
 <div *ngIf="type==='menu'" class="d-flex">
     <i class="bi bi-cart"></i>
@@ -66,6 +105,6 @@
     </span>
 </div>
 
-<div *ngIf="type==='float'" [ngClass]="totalItems > 10 ? 'float bg-success text-light p-2 rounded' : 'float bg-danger text-light p-2 rounded'">
-    {{totalItems}} ITEMS IN CART
+<div *ngIf="type==='float'" [ngClass]="totalItems > 10 ? 'float bg-success text-light p-2 rounded fs-5' : 'float bg-danger text-light p-2 rounded fs-5'">
+    <i class="bi bi-cart"></i> {{totalItems}} 
 </div>

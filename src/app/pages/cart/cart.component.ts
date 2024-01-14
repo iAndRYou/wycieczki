@@ -57,7 +57,7 @@ export class CartComponent implements OnInit {
       });
 
       // Remove trips that were deleted
-      this.trips.forEach(trip => async () => {
+      this.trips.forEach(async (trip) => {
         var index = gotTrips.findIndex(t => t.id === trip.id);
         if (index === -1) {
           await this.removeItem(index);
@@ -66,19 +66,31 @@ export class CartComponent implements OnInit {
     });
   }
 
-  get totalItems() {
+  get totalItems(): number {
     return this.cart.reduce((total, cartItem) => {
       return total + cartItem.quantity;
     }, 0);
   }
 
-  get totalTripsPrice() {
+  get totalSelectedItems(): number {
+    return this.cart.reduce((total, cartItem) => {
+      return total + (cartItem.selected? cartItem.quantity : 0);
+    }, 0);
+  }
+
+  get totalTripsPrice(): number {
     return this.cart.reduce((total, cartItem) => {
       return total + cartItem.quantity * this.trips.find(trip => trip.id === cartItem!.tripId)!.price;
     }, 0);
   }
 
-  calculatePrice(price: number) {
+  get totalSelectedTripsPrice(): number {
+    return this.cart.reduce((total, cartItem) => {
+      return total + (cartItem.selected? cartItem.quantity * this.trips.find(trip => trip.id === cartItem!.tripId)!.price : 0);
+    }, 0);
+  }
+
+  calculatePrice(price: number): number {
     return this.currency.multiplier * price;
   }
 
@@ -89,8 +101,7 @@ export class CartComponent implements OnInit {
   }
 
   async addItem(index: number) {
-    if (this.trips[index].availableTickets > 0)
-      await this.api.updateItemInCart(this.userId, this.cart[index].tripId, 1);
+    if (this.trips[index].availableTickets > 0) await this.api.updateItemInCart(this.userId, this.cart[index].tripId, 1, this.cart[index].selected);
 
     await this.changeAvailableTickets(index, -1);  
     console.log(this.trips);
@@ -99,10 +110,18 @@ export class CartComponent implements OnInit {
   async subtractItem(index: number) {
     await this.changeAvailableTickets(index, 1);
 
-    if (this.cart[index].quantity === 1)
-      await this.removeItem(index);
-    else
-      await this.api.updateItemInCart(this.userId, this.cart[index].tripId, -1);
+    if (this.cart[index].quantity === 1) await this.removeItem(index);
+    else await this.api.updateItemInCart(this.userId, this.cart[index].tripId, -1, this.cart[index].selected);
+  }
+
+  async buyItem(index: number) {
+    await this.api.buyItemFromCart(this.userId, this.cart[index]);
+  }
+
+  async buySelectedItems() {
+    this.cart.forEach(async (cartItem, index) => {
+      if (cartItem.selected) await this.buyItem(index);
+    });
   }
 
   async removeItem(index: number) {
@@ -111,6 +130,6 @@ export class CartComponent implements OnInit {
   }
 
   async switchSelectItem(index: number) {
-    await this.api.updateItemInCart(this.userId, this.cart[index].tripId, undefined, !this.cart[index].selected);
+    await this.api.updateItemInCart(this.userId, this.cart[index].tripId, 0, !this.cart[index].selected);
   }
 }

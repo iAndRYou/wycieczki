@@ -1,14 +1,18 @@
 <div class="input-group my-2">
     <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-    <input type="text" class="form-control bg-light" placeholder="Search" #filter (keyup)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
-    <button class="btn btn-outline-danger" (click)="filter.value = ''; startDate.value = ''; endDate.value = ''; filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)"><i class="bi bi-x"></i></button>
+    <input type="text" class="form-control bg-light" placeholder="Search" #filter 
+        (keyup)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
+    <button class="btn btn-outline-danger" 
+        (click)="filter.value = ''; startDate.value = ''; endDate.value = ''; filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)"><i class="bi bi-x"></i></button>
 </div>
 
 <div class="input-group my-2">
     <span class="input-group-text bg-light">Between</span>
-    <input type="date" class="form-control bg-light" #startDate (change)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
+    <input type="date" class="form-control bg-light" #startDate 
+        (change)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
     <span class="input-group-text bg-light">-</span>
-    <input type="date" class="form-control bg-light" #endDate (change)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
+    <input type="date" class="form-control bg-light" #endDate 
+        (change)="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
 </div>
 
 <div class="input-group my-2">
@@ -18,25 +22,6 @@
     <span class="input-group-text bg-light">Max price</span>
     <input type="number" class="form-control bg-light" [placeholder]="calculatePrice(highestPrice)"
         #maxPrice (keyup) ="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
-</div>
-
-<div class="input-group mb-3">
-    <span class="input-group-text bg-light form-control">Stars</span>
-    <div class="input-group-text bg-light">
-        <app-rating [value]="3" type="label"></app-rating>
-        <input type="checkbox" value="true" #threeStars 
-            (change)="threeStars.value === 'inactive' ? threeStars.value = 'active' : threeStars.value = 'inactive';">
-    </div>
-    <div class="input-group-text bg-light">
-        <app-rating [value]="4" type="label"></app-rating>
-        <input type="checkbox" value="inactive" #fourStars
-            (change)="fourStars.value === 'inactive' ? fourStars.value = 'active' : fourStars.value = 'inactive';">
-    </div>
-    <div class="input-group-text bg-light">
-        <app-rating [value]="5" type="label"></app-rating>
-        <input type="checkbox" value="inactive" #fiveStars
-            (change)="fiveStars.value === 'inactive' ? fiveStars.value = 'active' : fiveStars.value = 'inactive';">
-    </div>
 </div>
 
 <section *ngFor="let trip of trips" 
@@ -88,5 +73,5 @@
 </ng-template>
 
 <ng-template #noTrips>
-    <p class="fw-bold fs-4 text-danger">SOLD OUT</p>
+    <p class="text-danger fw-bold fs-4 my-2">SOLD OUT</p>
 </ng-template>
