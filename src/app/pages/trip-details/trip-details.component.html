@@ -8,7 +8,7 @@
 
 <div class="d-flex flex-column flex-md-row justify-content-md-between">
     <div class="d-flex flex-column">
-        <app-rating [ratings]="trip.ratings"></app-rating>
+        <app-rating [trip]="trip"></app-rating>
         
         <span class="fs-1 text-decoration-none text-dark mt-4">{{ trip.name | uppercase}}</span>
         <p class="fs-3 fw-bold">{{trip.location | uppercase}}</p>
@@ -43,6 +43,8 @@
 <p class="fs-6">{{trip.description}}</p>
 
 <div [innerHtml]="trip.mapSrc | safeHtml" class="row"></div>
+
+<app-rating [type]="'editable'" [trip]="trip"></app-rating>
 
 <p class="fs-5 fw-bold mt-4">Reviews</p>
 <div *ngFor="let review of trip.reviews">

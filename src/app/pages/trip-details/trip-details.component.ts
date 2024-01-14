@@ -17,7 +17,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './trip-details.component.css'
 })
 export class TripDetailsComponent implements OnInit {
-  userId: string = '';
+  userId: string | undefined = '';
   id: string = '';
   count: number = 0;
   router: Router = inject(Router);
@@ -38,6 +38,8 @@ export class TripDetailsComponent implements OnInit {
     this.authService.authState$.subscribe(user => {
       if (user) {
         this.userId = user.uid;
+      } else {
+          this.userId = undefined;
       }
     });
   }
@@ -57,7 +59,7 @@ export class TripDetailsComponent implements OnInit {
   async addItemToCart() {
     if (this.count <= 0 || this.count > this.trip.availableTickets) return;
 
-    await this.api.updateItemInCart(this.userId, this.id, this.count);
+    await this.api.updateItemInCart(this.userId!, this.id, this.count);
 
     var newTrip = this.trip;
     newTrip.availableTickets -= this.count;

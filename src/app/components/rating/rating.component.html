@@ -2,20 +2,32 @@
     <div class="star-rating fs-4 text-warning">
         <i class="bi bi-star-fill" *ngFor="let star of stars"></i>
         <i class="bi bi-star-half" *ngIf="getRating % 1 !== 0"></i>
-        {{getRating | number: '1.1-1'}} ({{ratingsNumber}})
+        <i class="bi bi-star" *ngFor="let star of emptyStars"></i>
+        @if (stars.length !== 0) { 
+            {{getRating | number: '1.1-1'}} ({{ratingsNumber}})
+        }
     </div>
 </div>
 
-<div *ngIf="type === 'editable'">
-    <div class="star-rating fs-4 text-warning">
-        <i class="bi bi-star-fill" *ngFor="let star of stars; index as i" (click)="rate(i + 1)"></i>
-        <i class="bi bi-star-half" *ngIf="getRating % 1 !== 0"></i>
-    </div>
+<div *ngIf="type === 'editable'" class="d-flex align-items-center mt-4">
+    @if(userId && !ifAlreadyRated()) {    
+        <span class="fs-5 me-5">Your rating:</span>
+        <div class="star-editable fs-4 text-warning">
+            <i *ngFor="let star of [].constructor(5); index as i" [ngClass]="'bi bi-star' + (i < hovering ? '-fill' : '')" 
+                (click)="rateTrip(hovering)" (mouseenter)="hovering = i+1"></i>
+        </div>
+    } @else if (ifAlreadyRated()) {
+        <span class="fs-5 me-5">Your rating:</span>
+        <div class="star-rating fs-4 text-warning">
+            <i class="bi bi-star-fill" *ngFor="let star of [].constructor(userRating())"></i>
+            <i class="bi bi-star" *ngFor="let star of [].constructor(5 - userRating())"></i>
+        </div>
+    }
 </div>
 
 <div *ngIf="type === 'label'">
-    <div class="star-rating text-warning mx-1">
-        <i class="bi bi-star-fill" *ngFor="let star of stars; index as i" (click)="rate(i + 1)"></i>
+    <div class="star-rating text-warning">
+        <i class="bi bi-star-fill" *ngFor="let star of stars; index as i"></i>
     </div>
 </div>
   

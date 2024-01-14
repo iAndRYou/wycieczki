@@ -16,7 +16,7 @@ import { CartComponent } from '../cart/cart.component';
   styleUrl: './trips.component.css'
 })
 export class TripsComponent implements OnInit {
-  userId: string = '';
+  userId: string | undefined = '';
   public trips: Trip[] = [];
   currency: Currency = {} as Currency;
 
@@ -45,6 +45,8 @@ export class TripsComponent implements OnInit {
     this.authService.authState$.subscribe(user => {
       if (user) {
         this.userId = user.uid;
+      } else {
+        this.userId = undefined;
       }
     });
   }
@@ -85,7 +87,7 @@ export class TripsComponent implements OnInit {
     if (count <= 0 || count > trip!.availableTickets) {
       return;
     }
-    await this.api.updateItemInCart(this.userId, trip.id, count);
+    await this.api.updateItemInCart(this.userId!, trip.id, count);
 
     var newTrip = trip;
     newTrip.availableTickets -= count;

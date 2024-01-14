@@ -29,6 +29,8 @@ export class HistoryComponent implements OnInit {
         this.api.getHistory$(user.uid).subscribe(history => {
           this.history = history;
         });
+      } else {
+        this.history = [];
       }
     });
 

@@ -33,7 +33,7 @@
         <img [routerLink]="['/trips', trip.id]"  [src]="trip.imgs[0]" class="rounded-circle card-img-circle pointer shadow" alt="..." loading="lazy">
         
         <div class="d-flex flex-column align-content-start mx-4 mt-3">
-            <app-rating [ratings]="trip.ratings"></app-rating>
+            <app-rating [trip]="trip"></app-rating>
             
             <a [routerLink]="['/trips', trip.id]" class="fs-3 text-decoration-none text-dark pointer">{{ trip.name | uppercase}}</a>
             

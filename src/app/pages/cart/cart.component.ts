@@ -17,7 +17,7 @@ import { RouterLink } from '@angular/router';
 export class CartComponent implements OnInit {
   @Input() type: 'default' | 'menu' | 'float' = 'default';
   
-  userId: string = '';
+  userId: string | undefined = '';
   cart: CartItem[] = [];
   trips: Trip[] = [];
   currency: Currency = {} as Currency;
@@ -42,6 +42,8 @@ export class CartComponent implements OnInit {
             });
           });
         });
+      } else {
+        this.userId = undefined;
       }
     });
 
@@ -101,7 +103,7 @@ export class CartComponent implements OnInit {
   }
 
   async addItem(index: number) {
-    if (this.trips[index].availableTickets > 0) await this.api.updateItemInCart(this.userId, this.cart[index].tripId, 1, this.cart[index].selected);
+    if (this.trips[index].availableTickets > 0) await this.api.updateItemInCart(this.userId!, this.cart[index].tripId, 1, this.cart[index].selected);
 
     await this.changeAvailableTickets(index, -1);  
     console.log(this.trips);
@@ -111,11 +113,11 @@ export class CartComponent implements OnInit {
     await this.changeAvailableTickets(index, 1);
 
     if (this.cart[index].quantity === 1) await this.removeItem(index);
-    else await this.api.updateItemInCart(this.userId, this.cart[index].tripId, -1, this.cart[index].selected);
+    else await this.api.updateItemInCart(this.userId!, this.cart[index].tripId, -1, this.cart[index].selected);
   }
 
   async buyItem(index: number) {
-    await this.api.buyItemFromCart(this.userId, this.cart[index]);
+    await this.api.buyItemFromCart(this.userId!, this.cart[index]);
   }
 
   async buySelectedItems() {
@@ -125,11 +127,11 @@ export class CartComponent implements OnInit {
   }
 
   async removeItem(index: number) {
-    await this.api.removeItemFromCart(this.userId, this.cart[index]);
+    await this.api.removeItemFromCart(this.userId!, this.cart[index]);
     this.trips.splice(index, 1);
   }
 
   async switchSelectItem(index: number) {
-    await this.api.updateItemInCart(this.userId, this.cart[index].tripId, 0, !this.cart[index].selected);
+    await this.api.updateItemInCart(this.userId!, this.cart[index].tripId, 0, !this.cart[index].selected);
   }
 }
