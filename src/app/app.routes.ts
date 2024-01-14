@@ -6,7 +6,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { HistoryComponent } from './pages/history/history.component';
 import { CartComponent } from './pages/cart/cart.component';
-import { AuthGuard } from '@angular/fire/auth-guard';
+import { AuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { TripDetailsComponent } from './pages/trip-details/trip-details.component';
 
 export const routes: Routes = [

@@ -22,7 +22,7 @@ export class RatingComponent {
   }
 
   get ratingsNumber(): number {
-    return this.ratings!.length;
+    return this.ratings ? this.ratings.length : 0;
   }
 
   get stars(): number[] {

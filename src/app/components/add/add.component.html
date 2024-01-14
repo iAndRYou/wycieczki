@@ -1,0 +1,151 @@
+<div class="d-flex flex-row justify-content-between align-items-baseline">
+    <p class="fs-3 my-4 fw-bold">
+        CREATE NEW TRIP
+    </p>
+</div>
+
+<form [formGroup]="form" class="d-flex flex-column">
+    <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
+        <div class="flex-grow-1 me-md-5">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" formControlName="name">
+
+            @if(f['name'].errors && (f['name'].dirty || f['name'].touched)) {
+                @if(f['name'].errors['required']) {
+                    <small class="text-danger">Required</small>
+                } @if(f['name'].errors['minlength']) {
+                    <small class="text-danger">At least {{f['name'].errors['minlength'].requiredLength}} characters</small>
+                } @if(f['name'].errors['maxlength']) {
+                    <small class="text-danger">Max {{f['name'].errors['maxlength'].requiredLength}} characters</small>
+                }
+            }
+        </div>
+
+        <div class="flex-grow-1 ms-md-5 mt-3 mt-md-0">
+            <label for="price" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" formControlName="location">
+
+            @if(f['location'].errors && (f['location'].dirty || f['location'].touched)) {
+                @if(f['location'].errors['required']) {
+                    <small class="text-danger">Required</small>
+                } @if(f['location'].errors['minlength']) {
+                    <small class="text-danger">At least {{f['location'].errors['minlength'].requiredLength}} characters</small>
+                }
+            }
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
+        <div class="flex-grow-1 me-md-5">
+            <label for="name" class="form-label">Available tickets</label>
+            <input type="number" class="form-control" id="availableTickets" formControlName="availableTickets" min="0">
+
+            @if(f['availableTickets'].errors && (f['availableTickets'].dirty || f['availableTickets'].touched)) {
+                @if(f['availableTickets'].errors['required']) {
+                    <small class="text-danger">Required</small>
+                } @if(f['availableTickets'].errors['min']) {
+                    <small class="text-danger">At least {{f['availableTickets'].errors['min'].min}}</small>
+                }
+            }
+        </div>
+
+        <div class="flex-grow-1 ms-md-5 mt-3 mt-md-0">
+            <label for="price" class="form-label">Price (USD)</label>
+            <input type="number" class="form-control" id="price" formControlName="price" min="0">
+
+            @if(f['price'].errors && (f['price'].dirty || f['price'].touched)) {
+                @if(f['price'].errors['required']) {
+                    <small class="text-danger">Required</small>
+                } @if(f['price'].errors['min']) {
+                    <small class="text-danger">At least {{f['price'].errors['min'].min}}</small>
+                }
+            }
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
+        <div class="flex-grow-1 me-md-5">
+            <label for="name" class="form-label">Start date</label>
+            <input type="date" class="form-control" id="startDate" formControlName="startDate">
+
+            @if(f['startDate'].errors && (f['startDate'].dirty || f['startDate'].touched)) {
+                @if(f['startDate'].errors['required']) {
+                    <small class="text-danger">Required</small>
+                }
+            }
+        </div>
+
+        <div class="flex-grow-1 ms-md-5 mt-3 mt-md-0">
+            <label for="price" class="form-label">End date</label>
+            <input type="date" class="form-control" id="endDate" formControlName="endDate">
+
+            @if(f['endDate'].errors && (f['endDate'].dirty || f['endDate'].touched)) {
+                @if(f['endDate'].errors['required']) {
+                    <small class="text-danger">Required</small>
+                }
+            }
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="mb-3">
+        <label for="price" class="form-label">Short description</label>
+        <textarea type="text" class="form-control no-resize" id="shortDescription" formControlName="shortDescription" rows="2"></textarea>
+
+        @if(f['shortDescription'].errors && (f['shortDescription'].dirty || f['shortDescription'].touched)) {
+            @if(f['shortDescription'].errors['required']) {
+                <small class="text-danger">Required</small>
+            } @if(f['shortDescription'].errors['minlength']) {
+                <small class="text-danger">At least {{f['shortDescription'].errors['minlength'].requiredLength}} characters</small>
+            } @if(f['shortDescription'].errors['maxlength']) {
+                <small class="text-danger">Max {{f['shortDescription'].errors['maxlength'].requiredLength}} characters</small>
+            }
+        }
+    </div>
+
+    <div class="mb-4">
+        <label for="price" class="form-label">Description</label>
+        <textarea type="text" class="form-control text-multi-line" id="description" formControlName="description"></textarea>
+
+        @if(f['description'].errors && (f['description'].dirty || f['description'].touched)) {
+            @if(f['description'].errors['required']) {
+                <small class="text-danger">Required</small>
+            } @if(f['description'].errors['minlength']) {
+                <small class="text-danger">At least {{f['description'].errors['minlength'].requiredLength}} characters</small>
+            }
+        }
+    </div>
+
+    <hr>
+
+    <div class="mb-3">
+        <label for="price" class="form-label">Images links - to divide use: ,</label>
+        <textarea type="text" class="form-control" id="imgs" formControlName="imgs"></textarea>
+
+        @if(f['imgs'].errors && (f['imgs'].dirty || f['imgs'].touched)) {
+            @if(f['imgs'].errors['required']) {
+                <small class="text-danger">Required</small>
+            }
+        }
+    </div>
+
+    <div class="mb-4">
+        <label for="price" class="form-label">Map source (HTML)</label>
+        <input type="text" class="form-control" id="mapSrc" formControlName="mapSrc">
+
+        @if(f['mapSrc'].errors && (f['mapSrc'].dirty || f['mapSrc'].touched)) {
+            @if(f['mapSrc'].errors['required']) {
+                <small class="text-danger">Required</small>
+            } @if(f['mapSrc'].errors['minlength']) {
+                <small class="text-danger">At least {{f['mapSrc'].errors['minlength'].requiredLength}} characters</small>
+            }
+        }
+    </div>
+
+    <button type="submit" class="btn btn-dark p-2 fs-5" [disabled]="!form.valid" (click)="onSubmit()">Create</button>
+</form>

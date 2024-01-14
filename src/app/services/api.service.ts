@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collectionData, collection, doc, docData, updateDoc, deleteDoc, addDoc, setDoc, Timestamp} from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, doc, docData, updateDoc, deleteDoc, addDoc, setDoc, Timestamp, getDocs} from '@angular/fire/firestore';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Trip } from '../interfaces/trip.interface';
 import { CartItem } from '../interfaces/cart-item.interface';
@@ -12,6 +12,10 @@ import { HistoryItem } from '../interfaces/history-item.interface';
 })
 export class ApiService {
   firestore: Firestore = inject(Firestore);
+
+  async addUser(userId: string) {
+    await setDoc(doc(this.firestore, 'users', userId), {'role': 'user'});
+  }
   
   get currency$(): Observable<Currency> {
     return docData(doc(this.firestore, 'settings', 'currency')) as Observable<Currency>;
@@ -66,6 +70,15 @@ export class ApiService {
     await deleteDoc(doc(this.firestore, 'users', userId, 'cart', cartItem.tripId));
   }
 
+  async removeItemFromAllCarts(tripId: string) {
+    var usersCollectionRef = collection(this.firestore, 'users');
+    var usersQuerySnapshot = await getDocs(usersCollectionRef);
+
+    usersQuerySnapshot.docs.forEach(async (user) => {
+      await deleteDoc(doc(this.firestore, 'users', user.id, 'cart', tripId));
+    });
+  }
+
   async buyItemFromCart(userId: string, cartItem: CartItem) {
     var tripDocRef = doc(this.firestore, 'trip', cartItem.tripId);
     var trip = await firstValueFrom(docData(tripDocRef)) as Trip;
@@ -85,11 +98,16 @@ export class ApiService {
   }
 
   async addNewTrip(trip: Trip) {
-    var docRef = await addDoc(collection(this.firestore, 'trip'), trip);
-    await updateDoc(docRef, { id: docRef.id });
+    var id = trip.name.toLowerCase().replace(/ /g, '-');
+    await setDoc(doc(this.firestore, 'trip', id), { ...trip, id: id });
   }
 
   async updateTrip(trip: Trip) {
     await updateDoc(doc(this.firestore, 'trip', trip.id), { ...trip});
+  }
+
+  async deleteTrip(trip: Trip) {
+    await this.removeItemFromAllCarts(trip.id);
+    await deleteDoc(doc(this.firestore, 'trip', trip.id));
   }
 }
