@@ -4,13 +4,28 @@
     </p>
 </div>
 
+<div class="input-group">
+    <span class="input-group-text fs-5">Status</span>
+    <button [ngClass]="filters.upcoming ? 'form-control fw-bold d-flex justify-content-center align-items-center text-white bg-info' 
+        : 'form-control fw-bold d-flex justify-content-center align-items-center text-dark'"
+        (click)="switchFilter('upcoming')">UPCOMING</button>
+    
+    <button [ngClass]="filters.ongoing ? 'form-control fw-bold d-flex justify-content-center align-items-center text-white bg-success'
+        : 'form-control fw-bold d-flex justify-content-center align-items-center text-dark'"
+        (click)="switchFilter('ongoing')">ONGOING</button>
+    
+    <button [ngClass]="filters.archived ? 'form-control fw-bold d-flex justify-content-center align-items-center text-white bg-danger'
+        : 'form-control fw-bold d-flex justify-content-center align-items-center text-dark'"
+        (click)="switchFilter('archived')">ARCHIVED</button>
+</div>
+
 <div *ngIf="history.length == 0" class="d-flex flex-column align-items-center">
     <p class="fs-3 my-4 fw-light">
         You have no trips ordered
     </p>
 </div>
 
-<div *ngFor="let item of history; index as i" class="my-4">
+<div *ngFor="let item of filterHistory(); index as i" class="my-4">
     <div class="m-3 d-flex flex-column flex-md-row justify-content-md-between">
         <div class="d-flex flex-column justify-content-end order-2 order-md-1 col-12 col-md-6">
             <span class="fs-3">

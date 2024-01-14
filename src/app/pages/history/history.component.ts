@@ -16,6 +16,7 @@ import { Timestamp } from '@angular/fire/firestore';
 export class HistoryComponent implements OnInit {
   history: HistoryItem[] = [];
   currency: Currency = {} as Currency;
+  filters = {upcoming: true, ongoing: true, archived: true};
 
   constructor(
     private api: ApiService,
@@ -33,6 +34,21 @@ export class HistoryComponent implements OnInit {
 
     this.api.currency$.subscribe(currency => this.currency = currency);
   }
+
+  filterHistory() {
+    return this.history.filter(historyItem => {
+      switch (this.getStatus(historyItem)) {
+        case 'Upcoming':
+          return this.filters.upcoming;
+        case 'Archived':
+          return this.filters.archived;
+        case 'Ongoing':
+          return this.filters.ongoing;
+        default:
+          return false;
+      }
+    });
+  };
 
   calculatePrice(HistoryItem: HistoryItem): number {
     return this.currency.multiplier * HistoryItem.price;
@@ -66,6 +82,20 @@ export class HistoryComponent implements OnInit {
         return 'text-success ';
       default:
         return 'text-dark ';
+    }
+  }
+
+  switchFilter(filter: string): void {
+    switch (filter) {
+      case 'upcoming':
+        this.filters.upcoming = !this.filters.upcoming;
+        break;
+      case 'ongoing':
+        this.filters.ongoing = !this.filters.ongoing;
+        break;
+      case 'archived':
+        this.filters.archived = !this.filters.archived;
+        break;
     }
   }
 }
