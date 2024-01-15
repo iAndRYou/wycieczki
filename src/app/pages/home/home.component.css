@@ -1,0 +1,22 @@
+.gradient {
+    background: linear-gradient(-45deg, #2FEAA8ff, #20CBC1ff, #11ABDAff, #028CF3ff);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.avatar {
+    max-width: 300px;
+    max-height: 300px;
+}
