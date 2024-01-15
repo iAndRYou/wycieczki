@@ -24,9 +24,8 @@ export class Trip {
     ) { }
 
     get averageRating(): number {
-        if (this.ratings.length === 0) {
-            return 0;
-        }
-        return this.ratings.map(rating => rating.rating).reduce((a, b) => a + b, 0) / this.ratings.length;
+        return this.ratings ? 
+        this.ratings.map(rating => rating.rating).reduce((a, b) => a + b, 0) || 0 
+        : 0
     }
 }

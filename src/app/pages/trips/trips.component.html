@@ -17,10 +17,10 @@
 
 <div class="input-group my-2">
     <span class="input-group-text bg-light">Min price</span>
-    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice(lowestPrice)"
+    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice(lowestPrice) | number : '1.2-2'"
         #minPrice (keyup) ="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
     <span class="input-group-text bg-light">Max price</span>
-    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice(highestPrice)"
+    <input type="number" class="form-control bg-light" [placeholder]="calculatePrice(highestPrice) | number : '1.2-2'"
         #maxPrice (keyup) ="filterTrips(filter.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)">
 </div>
 

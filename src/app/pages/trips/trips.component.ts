@@ -19,6 +19,7 @@ export class TripsComponent implements OnInit {
   userId: string | undefined = '';
   public trips: Trip[] = [];
   currency: Currency = {} as Currency;
+  starFilters = {stars3: false, stars4: false, stars5: false}
 
   constructor(
     private api: ApiService,
@@ -56,17 +57,17 @@ export class TripsComponent implements OnInit {
       .filter(trip => trip.name.toLowerCase().includes(filer.toLowerCase()) || trip.location.toLowerCase().includes(filer.toLowerCase()))
       .filter(trip => startDate ? trip.startDate.toDate() >= new Date(startDate) : true)
       .filter(trip => endDate ? trip.endDate.toDate() <= new Date(endDate) : true)
-      .filter(trip => minPrice ? trip.price >= +minPrice : true)
-      .filter(trip => maxPrice ? trip.price <= +maxPrice : true)
-      );
-  }
-
-  checkBox(value: string) {
-    console.log(value);
+      .filter(trip => minPrice ? trip.price >= this.recalculatePrice(+minPrice) : true)
+      .filter(trip => maxPrice ? trip.price <= this.recalculatePrice(+maxPrice) : true)
+    );
   }
 
   calculatePrice(price: number) {
     return this.currency.multiplier * price;
+  }
+
+  recalculatePrice(calculatedPrice: number) {
+    return calculatedPrice / this.currency.multiplier;
   }
 
   incrementOrderCount(count: number, trip: Trip) {
