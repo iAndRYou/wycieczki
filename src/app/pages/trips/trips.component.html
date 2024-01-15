@@ -66,7 +66,9 @@
     <p class="mx-3">{{trip.shortDescription}}</p>
 </section>
 
-<app-cart [type]="'float'"></app-cart>
+@if(userId){
+    <app-cart [type]="'float'"></app-cart>
+}
   
 <ng-template #loading>
 <p class="my-4">Loading&hellip;</p>
