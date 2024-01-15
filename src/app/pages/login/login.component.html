@@ -1,37 +1,53 @@
 <div class="d-flex flex-column flex-lg-row">
     <div class="container col-12 col-lg-6 m-2">
         <h1 class="text-start">Join us!</h1>
-        <h5 class="text-start mt-3">Discover Trip Consultor:</h5>
+        <h5 class="text-start my-4">Discover Trip Consultor:</h5>
+
+        <div class="d-flex align-items-center">
+            <i class="bi bi-check-circle fs-3"></i>
+            <span class="ms-2 fs-5">Popular destinations</span>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <i class="bi bi-check-circle fs-3"></i>
+            <span class="ms-2 fs-5">Exclusive offers</span>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <i class="bi bi-check-circle fs-3"></i>
+            <span class="ms-2 fs-5">Customer service 24/7</span>
+        </div>
+
+        <h5 class="text-start my-4">And much more!</h5>
+        <h6 class="text-start my-4">Sign up now and discover all the benefits of Trip Consultor!</h6>
     </div>
     <div class="container col-12 col-lg-6 m-2">
         <div class="card d-flex flex-column justify-content-center align-items-center p-5">
-            <form #form="ngForm" (submit)="onSubmit(form)" class="col-12">
-
-                <div *ngIf="isSignup" class="form-outline mb-3">
-                    <label class="form-label">Username</label>
-                    <input name="username" type="text" class="form-control" ngModel/>
-                </div>
-
-                <div class="form-outline mb-3">
-                    <label class="form-label">Email address</label>
-                    <input name="email" type="email" class="form-control" ngModel/>
+            <form [formGroup]="form" class="d-flex flex-column col-12">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email" formControlName="email">
+                    @if(f['email'].errors && (f['email'].dirty || f['email'].touched)) {
+                        @if(f['email'].errors['required']) {
+                            <small class="text-danger">Required</small>
+                        } @if(f['email'].errors['email']) {
+                            <small class="text-danger">Invalid email</small>
+                        }
+                    } @else if(errorMessage) {
+                        <small class="text-danger">Invalid credentials</small>
+                    }
                 </div>
               
-                <div class="form-outline mb-3">
-                    <label class="form-label">Password</label>
-                    <input name="password" type="password" class="form-control" ngModel/>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" formControlName="password">
                 </div>
               
                 <div class="d-flex justify-content-between align-items-center">
-                    <button *ngIf="isLogin" class="btn btn-dark mb-4" type="submit">Login</button>
-                    <button *ngIf="isSignup" class="btn btn-dark mb-4" type="submit">Sign Up</button>
-                    <div *ngIf="isSignup" class="d-flex">
-                        <span class="text-center mt-2">Signed up?</span>
-                        <button  class="btn mb-4 text-decoration-underline" (click)="switchAuthMode()">Login</button>
-                    </div>
-                    <div *ngIf="isLogin" class="d-flex">
+                    <button class="btn btn-dark mb-4" (click)="onSubmit()">Login</button>
+                    <div class="d-flex">
                         <span class="text-center mt-2">Not a member?</span>
-                        <button  class="btn mb-4 text-decoration-underline" (click)="switchAuthMode()">Sign Up</button>
+                        <button  class="btn mb-4 text-decoration-underline" (click)="goToSignUp()">Sign up</button>
                     </div>
                 </div>
             </form>

@@ -1,63 +1,52 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FirebaseError } from '@angular/fire/app';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
   authService: AuthService = inject(AuthService);
-  action: 'Login' | 'Sign Up' = 'Login';
+  fb: FormBuilder = inject(FormBuilder);
   router: Router = inject(Router);
+  errorMessage: string | undefined;
 
-  get isLogin() {
-    return this.action === 'Login';
+  form: FormGroup = new FormGroup({
+    email: new FormControl(
+      '', 
+      [Validators.required, Validators.email]
+    ),
+    password: new FormControl(
+      '', Validators.required,
+    ),
+  });
+
+  get f() {
+    return this.form.controls; 
   }
 
-  get isSignup() {
-    return this.action === 'Sign Up';
-  }
+  async onSubmit() {
+    if (this.form.invalid) return;
 
-  switchAuthMode() {
-    this.action = this.isLogin ? 'Sign Up' : 'Login';
-  }
-
-  async onSubmit(form: NgForm) {
-    if (!form.valid) {
-      return;
-    }
-
-    if (this.isLogin) {
-      await this.handleLogin(form);
-    } else if (this.isSignup) {
-      await this.handleSignup(form);
-    }
-  }
-
-  async handleLogin(form: NgForm) {
-    const { email, password } = form.value;
     try {
+      const { email, password } = this.form.value;
       await this.authService.login(email, password);
       this.router.navigate(['/']);
     } catch (error) {
-      console.log(error);
-      form.reset();
+      if (error instanceof FirebaseError) {
+        this.errorMessage = error.message;
+      }
     }
   }
 
-  async handleSignup(form: NgForm) {
-    const { username, email, password } = form.value;
-    try {
-      await this.authService.register(username, email, password);
-    } catch (error) {
-      console.log(error);
-      form.reset();
-    }
+  goToSignUp() {
+    this.router.navigate(['/signup']);
   }
 }

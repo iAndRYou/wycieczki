@@ -45,6 +45,8 @@
                         } @if(f['email'].errors['email']) {
                             <small class="text-danger">Invalid email</small>
                         }
+                    } @else if(errorMessage) {
+                        <small class="text-danger">Email already in use</small>
                     }
                 </div>
               

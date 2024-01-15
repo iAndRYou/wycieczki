@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FirebaseError } from '@angular/fire/app';
 
 @Component({
   selector: 'app-sign-up',
@@ -15,6 +16,7 @@ export class SignUpComponent {
   authService: AuthService = inject(AuthService);
   fb: FormBuilder = inject(FormBuilder);
   router: Router = inject(Router);
+  errorMessage: string | undefined;
 
   form: FormGroup = new FormGroup({
     username: new FormControl(
@@ -38,9 +40,15 @@ export class SignUpComponent {
   async onSubmit() {
     if (this.form.invalid) return;
 
-    const { username, email, password } = this.form.value;
-    await this.authService.register(username, email, password);
-    this.router.navigate(['/']);
+    try {
+      const { username, email, password } = this.form.value;
+      await this.authService.register(username, email, password);
+      this.router.navigate(['/']);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        this.errorMessage = error.message;
+      }
+    }
   }
 
   goToLogin() {

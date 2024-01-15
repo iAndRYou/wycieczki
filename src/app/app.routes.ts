@@ -8,6 +8,7 @@ import { HistoryComponent } from './pages/history/history.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { AuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { TripDetailsComponent } from './pages/trip-details/trip-details.component';
+import { SignUpComponent } from './pages/sign-up/sign-up.component';
 
 export const routes: Routes = [
     { 
@@ -58,6 +59,12 @@ export const routes: Routes = [
       path: 'login',
       component: LoginComponent,
       title: 'Login',
+      data: { preload: false },
+    },
+    {
+      path: 'signup',
+      component: SignUpComponent,
+      title: 'Sign Up',
       data: { preload: false },
     },
     { 
