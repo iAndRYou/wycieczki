@@ -3,6 +3,11 @@
         <div class="flex-grow-1 me-md-5">
             <label for="nick" class="form-label">Nick</label>
             <input type="text" class="form-control" id="nick" formControlName="nick">
+            @if(f['nick'].errors && (f['nick'].dirty || f['nick'].touched)) {
+                @if(f['nick'].errors['required']) {
+                    <small class="text-danger">Required</small>
+                }
+            }
         </div>
 
         <div class="flex-grow-1 mt-3 mt-md-0">
@@ -14,11 +19,25 @@
     <div class="flex-grow-1 mb-3">
         <label for="name" class="form-label">Title</label>
         <input type="text" class="form-control" id="name" formControlName="name">
+        @if(f['name'].errors && (f['name'].dirty || f['name'].touched)) {
+            @if(f['name'].errors['required']) {
+                <small class="text-danger">Required</small>
+            }
+        }
     </div>
 
     <div class="flex-grow-1 mb-4">
         <label for="text" class="form-label">Review</label>
         <textarea type="text" class="form-control" id="text" formControlName="text"></textarea>
+        @if(f['text'].errors && (f['text'].dirty || f['text'].touched)) {
+            @if(f['text'].errors['required']) {
+                <small class="text-danger">Required</small>
+            } @if(f['text'].errors['minlength']) {
+                <small class="text-danger">At least {{f['text'].errors['minlength'].requiredLength}} characters</small>
+            } @if(f['text'].errors['maxlength']) {
+                <small class="text-danger">At most {{f['text'].errors['maxlength'].requiredLength}} characters</small>
+            }
+        }
     </div>
 
     <button type="submit" class="btn btn-dark p-2 fs-5" [disabled]="!form.valid" (click)="onSubmit()">Add</button>
