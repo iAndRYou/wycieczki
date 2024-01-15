@@ -1,0 +1,25 @@
+<form [formGroup]="form" class="d-flex flex-column">
+    <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+        <div class="flex-grow-1 me-md-5">
+            <label for="nick" class="form-label">Nick</label>
+            <input type="text" class="form-control" id="nick" formControlName="nick">
+        </div>
+
+        <div class="flex-grow-1 mt-3 mt-md-0">
+            <label for="date" class="form-label">Purchase date</label>
+            <input type="date" class="form-control" id="date" formControlName="date">
+        </div>
+    </div>
+
+    <div class="flex-grow-1 mb-3">
+        <label for="name" class="form-label">Title</label>
+        <input type="text" class="form-control" id="name" formControlName="name">
+    </div>
+
+    <div class="flex-grow-1 mb-4">
+        <label for="text" class="form-label">Review</label>
+        <textarea type="text" class="form-control" id="text" formControlName="text"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-dark p-2 fs-5" [disabled]="!form.valid" (click)="onSubmit()">Add</button>
+</form>

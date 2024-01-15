@@ -46,10 +46,20 @@
 
 <app-rating [type]="'editable'" [trip]="trip"></app-rating>
 
+<p class="fs-5 fw-bold mt-4">Write a review</p>
+<app-add-review [trip]="trip"></app-add-review>
+
 <p class="fs-5 fw-bold mt-4">Reviews</p>
+@if (!trip.reviews) {
+    <p class="fs-6">No reviews yet</p>
+}
 <div *ngFor="let review of trip.reviews">
     <p class="fs-5">{{review.name}}</p>
-    <p class="fs-6 fw-lighter">{{review.nick}}, {{review.date.toDate() | date:'dd.MM.yyyy'}}</p>
+    <p class="fs-6 fw-lighter">{{review.nick}}
+        @if (review.date !== null) {
+            , {{review.date.toDate() | date:'dd.MM.yyyy'}}
+        }
+    </p>
     <p class="fs-6">{{review.text}}</p>
     <hr>
 </div>

@@ -74,15 +74,16 @@ export class AddComponent implements OnInit {
   }
 
   async onSubmit() {
-    if (this.form.invalid) {
-      return;
-    }
+    if (this.form.invalid) return;
+    
     console.log(this.form.value);
 
     await this.api.addNewTrip({...this.form.value, 
       imgs: this.handleImgs(), 
       startDate: this.handleDateToTimestamp(this.form.value.startDate), 
       endDate: this.handleDateToTimestamp(this.form.value.endDate)});
+
+    this.form.reset();
   }
 
   handleImgs(): string[] {

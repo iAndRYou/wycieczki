@@ -8,11 +8,12 @@ import { RatingComponent } from '../../components/rating/rating.component';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 import { Currency } from '../../interfaces/currency.interface';
 import { AuthService } from '../../services/auth.service';
+import { AddReviewComponent } from '../../components/add-review/add-review.component';
 
 @Component({
   selector: 'app-trip-details',
   standalone: true,
-  imports: [CommonModule, CarouselModule, RouterLink, RatingComponent, SafeHtmlPipe],
+  imports: [CommonModule, CarouselModule, RouterLink, RatingComponent, SafeHtmlPipe, AddReviewComponent],
   templateUrl: './trip-details.component.html',
   styleUrl: './trip-details.component.css'
 })
